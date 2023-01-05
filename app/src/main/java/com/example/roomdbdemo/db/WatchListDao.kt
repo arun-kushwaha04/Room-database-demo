@@ -8,16 +8,16 @@ import androidx.room.Query
 import androidx.room.Update
 
 @Dao
-interface WatchItemDao {
+interface WatchListDao {
     @Insert
-    suspend fun insertWatchItem(watchItem : watchItem)
+    suspend fun insertWatchItem(watchItem : WatchItem)
 
     @Delete
-    suspend fun deleteWatchItem(watchItem: watchItem)
+    suspend fun deleteWatchItem(watchItem: WatchItem)
 
     @Update
-    suspend fun updateWatchItem(watchItem: watchItem)
+    suspend fun updateWatchItem(watchItem: WatchItem)
 
     @Query("SELECT * FROM watch_list")
-    fun getWatchList():LiveData<List<watchItem>>
+    fun getWatchList():LiveData<List<WatchItem>>
 }
