@@ -6,7 +6,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.roomdbdemo.db.WatchItem
@@ -18,6 +17,10 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toWatchGenera : EditText
     private lateinit var rvWatchList : RecyclerView
     private lateinit var adapter: RecyclerViewAdapter
+    private lateinit var selectedItem : WatchItem
+    private lateinit var addButton: Button
+    private var isUpdateOccurring = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -25,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         toWatchName = findViewById<EditText>(R.id.etName)
         toWatchGenera = findViewById<EditText>(R.id.etGenera)
         rvWatchList = findViewById<RecyclerView>(R.id.rvWatchlist)
-        val addButton = findViewById<Button>(R.id.btnAdd)
+        addButton = findViewById<Button>(R.id.btnAdd)
         val clearButton = findViewById<Button>(R.id.btnClear)
 
         val dao = WatchListDatabase.getInstance(this).WatchListDao()
@@ -36,7 +39,8 @@ class MainActivity : AppCompatActivity() {
 
         addButton.setOnClickListener{
             if(validateInput()){
-                addToWatchList()
+                if(isUpdateOccurring)updateWatchItem(selectedItem)
+                else addToWatchList()
                 clearInput()
             }else{
                 Toast.makeText(this,"All field are required", Toast.LENGTH_SHORT).show()
@@ -50,14 +54,22 @@ class MainActivity : AppCompatActivity() {
 
     private fun initRecyclerView() {
         rvWatchList.layoutManager = LinearLayoutManager(this)
-        adapter = RecyclerViewAdapter { selectedItem: WatchItem ->
+        adapter = RecyclerViewAdapter({ selectedItem: WatchItem ->
             deleteWatchItem(
                 selectedItem
             )
-        }
+        }, { selectedItem: WatchItem -> setTextViews(selectedItem) })
         rvWatchList.adapter = adapter
 
             setRecyclerViewData()
+    }
+
+    private fun setTextViews(selectedItem: WatchItem) {
+        toWatchName.setText(selectedItem.name)
+        toWatchGenera.setText(selectedItem.genera)
+        isUpdateOccurring = true
+        this.selectedItem = selectedItem
+        addButton.text = "Update"
     }
 
     private fun setRecyclerViewData() {
@@ -72,20 +84,22 @@ class MainActivity : AppCompatActivity() {
             .isNotEmpty()
     }
 
-    fun addToWatchList(){
+    private fun addToWatchList(){
         viewModel.insertWatchItem(WatchItem(0,toWatchName.text.toString(),toWatchGenera.text.toString()))
     }
 
-    fun clearInput(){
+    private fun clearInput(){
         toWatchName.setText("")
         toWatchGenera.setText("")
+        isUpdateOccurring = false
+        addButton.text = "Add"
     }
 
-    fun updateWatchItem(watchItem : WatchItem) {
+    private fun updateWatchItem(watchItem : WatchItem) {
         viewModel.updateWatchItem(WatchItem(watchItem.id,toWatchName.text.toString(),toWatchGenera.text.toString()))
     }
 
-    fun deleteWatchItem(watchItem: WatchItem){
+    private fun deleteWatchItem(watchItem: WatchItem){
         viewModel.deleteWatchItem(WatchItem(watchItem.id,toWatchName.text.toString(),toWatchGenera.text.toString()))
     }
 }
