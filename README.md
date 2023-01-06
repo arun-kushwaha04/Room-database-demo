@@ -1,6 +1,7 @@
 # Room-database-demo
-A demo project to show how room database works in android.
-Implemented CRUD functionality using best coding practises possible.
-Used Coroutines for doing asynchronous task such as querying/updating database.
-Used ViewModles for storing activity state.
-[App Demo](https://user-images.githubusercontent.com/73020364/210977627-4061989d-d991-467b-9dd7-82e811ef14f0.webm)
+- A demo project to show how room database works in android.<br>
+- Implemented CRUD functionality using best coding practises possible.<br>
+- Used Coroutines for doing asynchronous task such as querying/updating database.<br>
+- Used ViewModles for storing activity state.<br>
+<br><br>
+![App Demo](https://user-images.githubusercontent.com/73020364/210978158-54990515-510b-4706-a49c-b6a452745be2.gif)
